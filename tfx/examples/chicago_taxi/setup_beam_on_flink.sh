@@ -46,6 +46,10 @@ function setup_flink() {
 
 function start_flink() {
   echo "Starting flink at $WORK_DIR/$FLINK_NAME"
+  local parallelism=$(get_parallelism)
+  local flink_conf=$WORK_DIR/$FLINK_NAME/conf/flink-conf.yaml
+  sed -i "s/parallelism.default: [0-9]*/parallelism.default: $parallelism/g" $flink_conf
+  sed -i "s/taskmanager.numberOfTaskSlots: [0-9]*/taskmanager.numberOfTaskSlots: $parallelism/g" $flink_conf
   cd $WORK_DIR/$FLINK_NAME && ./bin/stop-cluster.sh && ./bin/start-cluster.sh
   echo "Flink running from $WORK_DIR/$FLINK_NAME"
 }

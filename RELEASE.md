@@ -29,6 +29,7 @@
     `component.outputs['output_name']` (previously, the syntax was
     `component.outputs.output_name`).
 *   Updated Iris example to skip transform and use Keras model.
+*   Demonstrate multi-core processing in Flink Chicago Taxi example.
 
 ### Deprecations
 

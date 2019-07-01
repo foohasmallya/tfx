@@ -63,3 +63,7 @@ function update_beam(){
     cd $BEAM_DIR && $GIT_COMMAND checkout $BEAM_BRANCH && $GIT_COMMAND pull --rebase
   fi
 }
+
+function get_parallelism(){
+  python -c "import multiprocessing; print max(1, multiprocessing.cpu_count() - 1)"
+}

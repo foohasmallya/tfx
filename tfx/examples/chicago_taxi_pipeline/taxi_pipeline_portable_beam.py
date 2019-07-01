@@ -18,6 +18,7 @@ from __future__ import division
 from __future__ import print_function
 
 import datetime
+import multiprocessing
 import os
 from typing import Text
 from tfx.components.evaluator.component import Evaluator
@@ -64,6 +65,9 @@ _airflow_config = {
     'schedule_interval': None,
     'start_date': datetime.datetime(2019, 1, 1),
 }
+
+# Parallelism for Flink tasks.
+_parallelism = max(1, multiprocessing.cpu_count() - 1)
 
 
 def _create_pipeline(pipeline_name: Text, pipeline_root: Text, data_root: Text,
@@ -156,9 +160,10 @@ def _create_pipeline(pipeline_name: Text, pipeline_root: Text, data_root: Text,
               # TODO(BEAM-7199): Obviate the need for setting pre_optimize=all.  # pylint: disable=g-bad-todo
               '--experiments=pre_optimize=all',
               # ----- Flink runner-specific Args -----.
-              # TODO(b/126725506): Set the task parallelism based on cpu cores.
               # TODO(FLINK-10672): Obviate setting BATCH_FORCED.
               '--execution_mode_for_batch=BATCH_FORCED',
+              '--sdk_worker_parallelism %d' % _parallelism,
+              '--parallelism %d' % _parallelism,
           ],
           # LINT.ThenChange(../chicago_taxi/setup_beam_on_spark.sh)
           # LINT.ThenChange(../chicago_taxi/setup_beam_on_flink.sh)
