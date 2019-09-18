@@ -27,7 +27,7 @@ class SkipMagics(Magics):
   def skip_for_export(self, line, cell):
     # Execute the cell normally for now. During export to pipeline, this cell
     # will be skipped.
-    self.shell.run_cell(cell)
+    self.shell.ex(cell)
     print('This cell will be skipped during export to pipeline.')
 
 
