@@ -59,3 +59,7 @@ class Schema(artifact.Artifact):
 
 class TransformGraph(artifact.Artifact):
   TYPE_NAME = 'TransformPath'
+
+
+class BulkInference(artifact.Artifact):
+  TYPE_NAME = 'BulkInferencePath'

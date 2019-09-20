@@ -19,6 +19,7 @@ from __future__ import print_function
 
 from typing import Any, Dict, Text
 
+from tfx.proto import bulk_inferrer_pb2
 from tfx.proto import evaluator_pb2
 from tfx.proto import example_gen_pb2
 from tfx.proto import pusher_pb2
@@ -48,6 +49,33 @@ class EvaluatorSpec(ComponentSpec):
   # These compatibility aliases are provided for forwards compatibility.
   _INPUT_COMPATIBILITY_ALIASES = {
       'model': 'model_exports',
+  }
+
+
+class BulkInferrerSpec(ComponentSpec):
+  """BulkInferrer component spec."""
+
+  PARAMETERS = {
+      'model_spec':
+          ExecutionParameter(type=bulk_inferrer_pb2.ModelSpec, optional=True),
+      'data_spec':
+          ExecutionParameter(type=bulk_inferrer_pb2.DataSpec, optional=True),
+      'output_destination':
+          ExecutionParameter(type=bulk_inferrer_pb2.BulkInferrerOutputList),
+  }
+  INPUTS = {
+      'examples':
+          ChannelParameter(type=standard_artifacts.Examples),
+      'model_export':
+          ChannelParameter(type=standard_artifacts.Model, optional=True),
+      'model_blessing':
+          ChannelParameter(
+              type=standard_artifacts.ModelBlessing, optional=True),
+      'model_push':
+          ChannelParameter(type=standard_artifacts.PushedModel, optional=True),
+  }
+  OUTPUTS = {
+      'output': ChannelParameter(type=standard_artifacts.BulkInference),
   }
 
 
