@@ -50,6 +50,10 @@ WORKDIR ${TFX_SRC_DIR}
 RUN python setup.py bdist_wheel
 RUN CFLAGS=$(/usr/bin/python3.6-config --cflags) pip install $(find dist -name "tfx-*.whl")[docker_image]
 
+# Patch http.py in googleapiclient to use our own UserAgent.
+RUN patch /opt/venv/lib/python3.6/site-packages/googleapiclient/http.py \
+  /tfx-src/tfx/tools/docker/patches/http.patch
+
 ARG gather_third_party_licenses=true
 RUN if [ "${gather_third_party_licenses}" = "true" ]; then \
   /tfx-src/tfx/tools/docker/license.sh \
