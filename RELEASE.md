@@ -33,6 +33,7 @@
 *   Added container builder feature in the CLI tool for container-based custom
     python components. This is specifically for the Kubeflow orchestration
     engine, which requires containers built with the custom python codes.
+*   Added experimental support for TFMA fairness indicator thresholds.
 ## Bug fixes and other changes
 *   Bumped test dependency to kfp (Kubeflow Pipelines SDK) to
     be at version 0.1.31.2.
