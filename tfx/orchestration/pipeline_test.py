@@ -110,11 +110,6 @@ class PipelineTest(tf.test.TestCase):
     self.assertItemsEqual(my_pipeline.components[0].downstream_nodes,
                           [component_b, component_c, component_e])
     self.assertEqual(my_pipeline.components[-1], component_e)
-    self.assertDictEqual(my_pipeline.pipeline_args, {
-        'pipeline_name': 'a',
-        'pipeline_root': 'b',
-        'additional_pipeline_args': {},
-    })
     self.assertEqual(my_pipeline.pipeline_info.pipeline_name, 'a')
     self.assertEqual(my_pipeline.pipeline_info.pipeline_root, 'b')
     self.assertEqual(my_pipeline.metadata_connection_config,
@@ -212,28 +207,6 @@ class PipelineTest(tf.test.TestCase):
     self.assertEqual(component_b.inputs['a']._artifacts[0].producer_component,
                      component_a.id)
     self.assertEqual(component_b.inputs['a']._artifacts[0].name, 'one')
-
-  def testPipelineDecorator(self):
-
-    @pipeline.PipelineDecorator(
-        pipeline_name='a',
-        pipeline_root='b',
-        log_root='c',
-        metadata_connection_config=self._metadata_connection_config)
-    def create_pipeline():
-      self.component_a = _make_fake_component_instance('component_a', {}, {})
-      self.component_b = _make_fake_component_instance('component_b', {}, {})
-      return [self.component_a, self.component_b]
-
-    my_pipeline = create_pipeline()
-
-    self.assertItemsEqual(my_pipeline.components,
-                          [self.component_a, self.component_b])
-    self.assertDictEqual(my_pipeline.pipeline_args, {
-        'pipeline_name': 'a',
-        'pipeline_root': 'b',
-        'log_root': 'c',
-    })
 
   def testPipelineSavePipelineArgs(self):
     os.environ['TFX_JSON_EXPORT_PIPELINE_ARGS_PATH'] = self._tmp_file

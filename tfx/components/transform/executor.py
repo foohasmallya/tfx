@@ -535,9 +535,12 @@ class Executor(base_executor.BaseExecutor):
               [feature_value], dtype=feature_spec.dtype.as_numpy_dtype)
       return result
 
+    # TODO(pachristopher): Remove encoding and batching steps once TFT
+    # supports Arrow tables.
+    # TODO(pachristopher): Explore if encoding TFT dict into serialized examples
+    # and then converting them to Arrow tables is cheaper than converting to
+    # TFDV dict and then to Arrow tables.
     result = (pcollection
-              # TODO(kestert): Remove encoding and batching steps once TFT
-              # supports Arrow tables.
               | 'EncodeTFDV' >> beam.Map(
                   EncodeTFDV, feature_specs=feature_specs_from_schema))
 
@@ -1141,8 +1144,8 @@ class Executor(base_executor.BaseExecutor):
                                     tft.TFTransformOutput.RAW_METADATA_DIR)
     metadata_io.write_metadata(metadata, raw_metadata_dir)
 
-    with tf.Graph().as_default() as graph:
-      with tf.Session(graph=graph) as sess:
+    with tf.compat.v1.Graph().as_default() as graph:
+      with tf.compat.v1.Session(graph=graph) as sess:
 
         input_signature = impl_helper.feature_spec_as_batched_placeholders(
             schema_utils.schema_as_feature_spec(
@@ -1159,8 +1162,8 @@ class Executor(base_executor.BaseExecutor):
         copied_inputs = impl_helper.copy_tensors(input_signature)
 
         output_signature = preprocessing_fn(copied_inputs)
-        sess.run(tf.global_variables_initializer())
-        sess.run(tf.tables_initializer())
+        sess.run(tf.compat.v1.global_variables_initializer())
+        sess.run(tf.compat.v1.tables_initializer())
         transform_fn_path = os.path.join(transform_output_path,
                                          tft.TFTransformOutput.TRANSFORM_FN_DIR)
         saved_transform_io.write_saved_transform_from_session(

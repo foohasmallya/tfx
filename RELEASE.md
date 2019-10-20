@@ -2,6 +2,8 @@
 
 ## Major Features and Improvements
 
+*   Offered unified CLI for tfx pipeline actions on various orchestrators
+    including Apache Airflow, Apache Beam and Kubeflow.
 *   Made model validator executor forward compatible with TFMA change.
 *   Added Iris flowers classification example.
 *   Added support for serialization and deserialization of components.
@@ -32,7 +34,9 @@
 *   Added cifar-10 example to demonstrate image classification.
 *   Added container builder feature in the CLI tool for container-based custom
     python components. This is specifically for the Kubeflow orchestration
-    engine, which requires containers built with the custom python codes.
+    engine, which requires containers built with the custom python code.
+*   Added experimental support for TFMA fairness indicator thresholds.
+
 ## Bug fixes and other changes
 *   Bumped test dependency to kfp (Kubeflow Pipelines SDK) to
     be at version 0.1.31.2.
@@ -48,8 +52,15 @@
     `component.outputs.output_name`).
 *   Updated Iris example to skip transform and use Keras model.
 *   Fixed the check for input artifact existence in base driver.
-*   Fixed bug in AI Platform Pusher that prevents pushes after first push.
+*   Fixed bug in AI Platform Pusher that prevents pushes after first model,
+    and not being marked as default.
 *   Replaced all usage of deprecated `tensorflow.logging` with `absl.logging`.
+*   Used special user agent for all HTTP requests through
+    googleapiclient and apitools.
+*   Transform component updated to use `tf.compat.v1` according to the TF 2.0
+    upgrading procedure.
+*   TFX updated to use `tf.compat.v1` according to the TF 2.0 upgrading
+    procedure.
 
 ### Deprecations
 
