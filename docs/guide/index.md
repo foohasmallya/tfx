@@ -60,29 +60,29 @@ in the pipeline, but not necessarily to determine what the artifact content
 physically is on a filesystem.
 
 For instance, the *Example* artifact type may represent Examples materialized in
-TFRecord of `tensorflow::Example` protocol buffer, CSV, JSON, or any other
-physical format. Regardless, the way Examples are used in a pipeline is exactly
+`TFRecord` of `tensorflow::Example` protocol buffer, `CSV`, `JSON`, or any other
+physical format. Regardless, the way *Examples* are used in a pipeline is exactly
 the same: being analyzed to generate statistics, being validated against
 expected schema, being pre-processed in advance to training, and being supplied
 to a Trainer to training models, and so forth. Likewise, the *Model* artifact
 type may represent trained model objects exported in various physical formats
-such as TensorFlow SavedModel, ONNX, PMML or PKL (of various types of model
+such as TensorFlow `SavedModel`, `ONNX`, `PMML` or `PKL` (of various types of model
 objects in Python). In any case, models are always to be evaluated, analyzed and
 deployed for serving in pipelines.
 
-**Note:** As of TFX 0.14, *Examples* artifact is assumed to be `tensorflow::Example`
-protocol buffer in gzip-compressed TFRecord format. *Model* artifact is assumed
-to be TensorFlow SavedModel. Future versions of TFX may expand those artifact
+**Note:** As of TFX 0.14, the *Examples* artifact is assumed to be `tensorflow::Example`
+protocol buffer in gzip-compressed TFRecord format. `Model` artifact is assumed
+to be TensorFlow `SavedModel`. Future versions of TFX may expand those artifact
 types to support more variants.
 
-In order to differentiate such possible variants of the same **artifact type**,
+In order to differentiate such variants of the same **artifact type**,
 the ML Metadata defines a set of **artifact properties**. For instance, one such
-**artifact property** for an *Examples* artifact may be *format*, whose values
-may be one of `TFRecord`, `JSON`, `CSV`, and so forth. Artifacts of type
-*Examples* can always be passed to a component that is designed to take Examples
-as an input artifact (for example, a Trainer). However, the actual
+**artifact property** for an *Examples* artifact may be the format. The format may be
+`TFRecord`, `JSON`, `CSV`, etc. Artifacts of type
+*Examples* can always be passed to a component that is designed to take *Examples*
+as an input artifact (Ex: a Trainer). However, the actual
 implementation of the consuming component may adjust its behavior in response to
-a particular value of the *format* property, or simply raise a runtime error if
+a particular value of the format property, or simply raise a runtime error if
 it doesn’t have implementation to process the particular format of the Examples.
 
 In summary, **artifact types** define the ontology of **artifacts** in the
@@ -90,23 +90,23 @@ entire TFX pipeline system, whereas **artifact properties** define the ontology
 specific to an **artifact type**. Users of the pipeline system can choose to
 extend such ontology locally to their pipeline applications, by defining and
 populating new custom properties. Users can also choose to extend the ontology
-globally for the system as a whole, by introducing new artifact types, and/or
-modifying predefined type-properties, in which case such extension would be
-contributed back to the master repository of the pipeline system (the TFX
+globally for the system as a whole by introducing new artifact types and/or
+modifying pre-defined type properties, in which case such an extension would be
+contributed back to the master repository of the pipeline system (i.e The TFX
 repository).
 
 ## TFX Pipeline Components
 
 A TFX pipeline is a sequence of components that implement an [ML
-pipeline](https://en.wikipedia.org/wiki/Pipeline_(computing)) which is
-specifically designed for scalable, high-performance machine learning tasks.
-That includes modeling, training, serving inference, and managing deployments to
+pipeline](https://en.wikipedia.org/wiki/Pipeline_(computing)). These pipelines are
+specifically designed for scalable, high-performance machine learning tasks
+like modeling, training, serving inference, and managing deployments to
 online, native mobile, and JavaScript targets.
 
 A TFX pipeline typically includes the following components:
 
 * [**ExampleGen**](examplegen.md) is the initial input component of a pipeline
-that ingests and optionally splits the input dataset
+that ingests and, optionally, splits the input dataset
 
 * [**StatisticsGen**](statsgen.md) calculates statistics for the dataset
 
@@ -144,15 +144,15 @@ TFX components consist of three main pieces:
 #### Driver and Publisher
 
 The driver supplies metadata to the executor by querying the metadata store,
-while the publisher accepts the results of the executor and stores them in
-metadata. As a developer you will typically not need to interact with the
+while the publisher accepts the results of the executor and stores them in the 
+metadata store. As a developer, you will typically not need to interact with the
 driver and publisher directly, but messages logged by the driver and publisher
 may be useful during debugging.  See [Troubleshooting](#troubleshooting).
 
 #### Executor
 
-The executor is where a component performs its processing.  As a developer you
-write code which runs in the executor, based on the requirements
+The executor is where a component performs its processing.  As a developer, you
+write code which runs in the executor based on the requirements
 of the classes which implement the type of component that you're working with.
 For example, when you're working on a [Transform component](transform.md) you
 will need to develop a `preprocessing_fn`.
@@ -164,7 +164,7 @@ the relationships between TFX libraries and pipeline components:
 
 ![Libraries and Components](libraries_components.svg)
 
-TFX provides several Python packages that are the libraries which are used to
+TFX provides several Python packages. These libraries are used to
 create pipeline components.  You'll use these libraries to create the components
 of your pipelines so that your code can focus on the unique aspects of your
 pipeline.
@@ -172,19 +172,18 @@ pipeline.
 TFX libraries include:
 
 *   [**TensorFlow Data Validation (TFDV)**](tfdv.md) is a library for analyzing
-and validating machine learning data. It is designed to be highly scalable and
+and validating machine learning data. It is a highly scalable library designed
 to work well with TensorFlow and TFX.  TFDV includes:
 
     * Scalable calculation of summary statistics of training and test data
-    * Integration with a viewer for data distributions and statistics, as well
-    as faceted comparison of pairs of datasets (Facets)
+    * An integration with a viewer for viewing data distributions, statistics, and
+    faceted comparisons of pairs of datasets (Called Facets) are also done
     * Automated data-schema generation to describe expectations about data like
     required values, ranges, and vocabularies
     * A schema viewer to help you inspect the schema
     * Anomaly detection to identify anomalies, such as missing features, out-of-
     range values, or wrong feature types, to name a few
-    * An anomalies viewer so that you can see what features have anomalies and
-    learn more in order to correct them
+    * An anomalies viewer to see what features have anomalies (In order to correct them)
 
 *   [**TensorFlow Transform (TFT)**](tft.md) is a library for preprocessing data
 with TensorFlow. TensorFlow Transform is useful for data that requires a full-
@@ -196,26 +195,26 @@ pass, such as:
     * Convert floats to integers by assigning them to buckets based on the
     observed data distribution
 
-*   [**TensorFlow**](train.md) is used for training models with TFX.  It ingests
-training data and modeling code and creates a SavedModel result.  It also
+*   [**TensorFlow**](train.md) is a library that is used for training models with TFX.  It ingests
+training data and modeling code, and creates a `SavedModel` result.  It also
 integrates a feature engineering pipeline created by TensorFlow Transform for
 preprocessing input data.
 
 *   [**TensorFlow Model Analysis (TFMA)**](tfma.md) is a library for evaluating
-TensorFlow models. It is used along with TensorFlow to create an EvalSavedModel,
+TensorFlow models. It is used along with TensorFlow to create an `EvalSavedModel`,
 which becomes the basis for its analysis.  It allows users to evaluate their
-models on large amounts of data in a distributed manner, using the same metrics
+models on large amounts of data in a distributed manner using the same metrics
 defined in their trainer. These metrics can be computed over different slices of
 data and visualized in Jupyter notebooks.
 
 * [**TensorFlow Metadata (TFMD)**](https://github.com/tensorflow/metadata)
-provides standard representations
-for metadata that are useful when training machine learning models with
+is a library that provides standard representations
+for metadata. These representations are useful when training machine learning models with
 TensorFlow. The metadata may be produced by hand or automatically during input
 data analysis, and may be consumed for data validation, exploration, and
 transformation. The metadata serialization formats include:
 
-    * A schema describing tabular data (e.g., tf.Examples)
+    * A schema describing tabular data (Ex: `tf.Examples`)
     * A collection of summary statistics over such datasets
 
 * [**ML Metadata (MLMD)**](mlmd.md)
@@ -233,7 +232,7 @@ both batch and streaming data-parallel processing pipelines. TFX uses
 Apache Beam to implement data-parallel pipelines.  The pipeline is then executed
 by one of Beam's supported distributed processing back-ends, which include
 Apache Flink, Apache Spark,
-[Google Cloud Dataflow](https://cloud.google.com/dataflow/), and others.
+[Google Cloud Dataflow](https://cloud.google.com/dataflow/), among others.
 
 #### Optional
 
