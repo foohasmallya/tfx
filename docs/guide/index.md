@@ -240,7 +240,7 @@ Orchestrators such as Apache Airflow and Kubeflow make configuring, operating,
 monitoring, and maintaining an ML pipeline easier.
 
 *   [**Apache Airflow**](https://airflow.apache.org/) is a platform to
-    programmatically author, schedule and monitor workflows. TFX uses Airflow to
+    programmatically author, schedule, and monitor workflows. TFX uses Airflow to
     author workflows as directed acyclic graphs (DAGs) of tasks. The Airflow
     scheduler executes tasks on an array of workers while following the
     specified dependencies. Rich command line utilities make performing complex
@@ -266,16 +266,15 @@ monitoring, and maintaining an ML pipeline easier.
 ### Portability and Interoperability
 
 TFX is designed to be portable to multiple environments and orchestration
-frameworks, including [Apache Airflow](airflow.md),
-[Apache Beam](beam_orchestrator.md) and [Kubeflow](kubeflow.md) . It is also
-portable to different computing platforms, including on-premise, and
-cloud platforms such as the
-[Google Cloud Platform (GCP)](https://cloud.google.com/). In particular,
-TFX interoperates with serveral managed GCP services, such as
-[Cloud AI Platform](https://cloud.google.com/ai-platform/) for
-[Training and Prediction](https://cloud.google.com/ml-engine/), and
+frameworks such as [Apache Airflow](airflow.md),
+[Apache Beam](beam_orchestrator.md), and [Kubeflow](kubeflow.md) . It is also
+portable to different computing platforms. Not just cloud computing
+platforms like [Google Cloud Platform (GCP)](https://cloud.google.com/), but also on-prem. In particular,
+TFX inter-operates with several managed GCP services such as
+[Cloud AI Platform](https://cloud.google.com/ai-platform/), 
+[ML Engine](https://cloud.google.com/ml-engine/), and
 [Cloud Dataflow](https://cloud.google.com/dataflow/) for distributed data
-processing for several other aspects of the ML lifecycle.
+processing (For several other aspects of the ML lifecycle).
 
 **Note:** The current revision of this user guide primarily discusses deployment
 on a bare-metal system using Apache Airflow for orchestration.
@@ -296,24 +295,24 @@ computed. The two senses may be used interchangeably based on context.
 
 #### SavedModel
 
-* **What is a [SavedModel](
-https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/saved_model)**: a universal,
-language-neutral, hermetic, recoverable serialization of a TensorFlow model.
 * **Why is it important**: It enables higher-level systems to produce,
 transform, and consume TensorFlow models using a single abstraction.
 
-SavedModel is the recommended serialization format for serving a TensorFlow
-model in production, or exporting a trained model for a native mobile or
-JavaScript application. For example, to turn a model into a REST service for
-making predictions, you can serialize the model as a SavedModel and serve it
+`SavedModel` is a universal, language-neutral, hermetic, recoverable serialization
+of a TensorFlow model. It enables higher level systems to produce, transform, and consume
+TensorFlow models using a single abstraction.
+It is alsothe recommended serialization format for serving a TensorFlow
+model in production (Or for exporting a trained model for a native mobile/JavaScript application).
+For example, to turn a model into a REST service that makes
+predictions, you can serialize the model as a `SavedModel` and serve it
 using TensorFlow Serving. See [Serving a TensorFlow
 Model](https://www.tensorflow.org/serving/tutorials/Serving_REST_simple) for
-more information.
+more information on serving/inference.
 
 ### Schema
 
-Some TFX components use a description of your input data called a *schema*. The
-schema is an instance of
+Some TFX components use a description of your input data. This description
+is called a **schema**. The schema is an instance of
 [schema.proto](
 https://github.com/tensorflow/metadata/tree/master/tensorflow_metadata/proto/v0).
 Schemas are a type of [protocol buffer](
@@ -355,24 +354,20 @@ feature {
 ...
 ```
 
-The following components use the schema:
-
-*   TensorFlow Data Validation
-*   TensorFlow Transform
-
-In a typical TFX pipeline TensorFlow Data Validation generates a schema, which
+The TensorFlow Data Validation and TensorFlow Transform libraries use the schema.
+In a typical TFX pipeline, TensorFlow Data Validation generates a schema which
 is consumed by the other components.
 
 **Note:** The auto-generated schema is best-effort and only tries to infer basic
-properties of the data. It is expected that developers review and modify it as
+properties of the data. It is expected that developers review and modify the schema as
 needed.
 
 ## Developing with TFX
 
-TFX provides a powerful platform for every phase of a machine learning project,
-from research, experimentation, and development on your local machine, through
-deployment. In order to avoid code duplication and eliminate the potential for
-[training/serving skew](#training-serving-skew-detection) it is strongly
+TFX provides a powerful platform for every phase of a machine learning project, be it
+research, experimentation, development on your local machine, or even
+deployment. In order to avoid code duplication and to eliminate the potential for
+[training/serving skew] it is strongly
 recommended to implement your TFX pipeline for both model training and
 deployment of trained models, and use [Transform](transform.md) components which
 leverage the [TensorFlow Transform](tft.md) library for both training and
@@ -385,19 +380,19 @@ code once.
 
 ![Data Exploration, Visualization, and Cleaning](wrangling.svg)
 
-TFX pipelines typically begin with an [ExampleGen](examplegen.md) component, which
-accepts input data and formats it as tf.Examples.  Often this is done after the
+TFX pipelines typically begin with an [ExampleGen](examplegen.md) component which
+accepts input data and formats it as `tf.Example` records.  Often this is done after the
 data has been split into training and evaluation datasets so that there are
 actually two copies of ExampleGen components, one each for training and evaluation.
 This is typically followed by a
 [StatisticsGen](statsgen.md) component and a [SchemaGen](schemagen.md) component,
 which will examine your data and infer a data
 schema and statistics.  The schema and statistics will be consumed by an
-[ExampleValidator](exampleval.md) component, which will look for anomalies, missing
+[ExampleValidator](exampleval.md) component which will look for anomalies, missing
 values, and incorrect data types in your data.  All of these components leverage the
 capabilities of the [TensorFlow Data Validation](tfdv.md) library.
 
-[TensorFlow Data Validation (TFDV)](tfdv.md) is a valuable tool when doing
+[TensorFlow Data Validation (TFDV)](tfdv.md) is a valuable tool for
 initial exploration, visualization, and cleaning of your dataset.  TFDV examines
 your data and infers the data types, categories, and ranges, and then
 automatically helps identify anomalies and missing values.  It also provides
@@ -413,8 +408,8 @@ there are data problems or when models need to be retrained on new data.
 
 ### Data Visualization
 
-After you have completed your first run of your data through the section of your
-pipeline that uses TFDV (typically StatisticsGen, SchemaGen, and
+After you have completed the first run of your data through the section of the
+pipeline that uses TFDV (Typically StatisticsGen, SchemaGen, and
 ExampleValidator) you
 can visualize the results in a Jupyter style notebook.  For additional runs
 you can
@@ -436,8 +431,8 @@ dataset, and if necessary modify as required.
 
 ![Feature Engineering](feature_eng.svg)
 
-A typical TFX pipeline will include a [Transform](transform.md) component, which
-will perform feature engineering by leveraging the capabilities of the
+A typical TFX pipeline will include a [Transform](transform.md) component which
+performs feature engineering by leveraging the capabilities of the
 [TensorFlow Transform (TFT)](tft.md) library.  A Transform component consumes
 the schema created by a SchemaGen component, and applies [data transformations](
 //tfx/transform/api_docs/python/tft) to
@@ -449,18 +444,18 @@ considerations](train.md) when designing TensorFlow code for training in TFX.
 
 ![Modeling and Training](train.svg)
 
-The result of a Transform component is a SavedModel which will be imported and
-used in your modeling code in TensorFlow, during a [Trainer](trainer.md)
+The result of a Transform component is a `SavedModel` which will be imported and
+used in your modeling code in TensorFlow during a [Trainer](trainer.md)
 component.  This
-SavedModel includes all of the data engineering transformations that were
-created in the Transform component, so that the identical transforms are
+`SavedModel` includes all of the data engineering transformations that were
+created in the Transform component so that the identical transforms are
 performed
 using the exact same code during both training and inference.  Using the
-modeling code, including the SavedModel from the Transform component, you can
+modeling code, including the `SavedModel` from the Transform component, you can
 consume your training and evaluation data and train your model.
 
 During the last section of your modeling code you should save your model as both
-a SavedModel and an EvalSavedModel.  Saving as an EvalSavedModel will require
+a `SavedModel` and an `EvalSavedModel`.  Saving as an `EvalSavedModel` will require
 you to import and apply [TensorFlow Model Analysis (TFMA)](tfma.md) library in
 your Trainer component.
 
@@ -479,7 +474,7 @@ tfma.export.export_eval_savedmodel(
 ![Model Analysis](analysis.svg)
 
 Following initial model development and training it's important to analyze and
-really understand you model's performance.  A typical TFX pipeline will include
+really understand your model's performance.  A typical TFX pipeline will include
 an [Evaluator](evaluator.md) component, which leverages the capabilities of the
 [TensorFlow Model Analysis (TFMA)](tfma.md) library, which provides a power
 toolset for this phase of development.  An Evaluator component consumes the
