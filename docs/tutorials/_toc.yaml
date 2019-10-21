@@ -1,10 +1,18 @@
 toc:
 - title: "Get started with TFX"
   path: /tfx/tutorials/
-- title: "Developer tutorial"
+- title: "Developer tutorial (Airflow-based)"
   path: /tfx/tutorials/tfx/airflow_workshop
-- title: "End-to-end pipeline example"
+- title: "Chicago taxi pipeline example"
   path: https://github.com/tensorflow/tfx/tree/master/tfx/examples/chicago_taxi_pipeline
+- title: "Cifar10 pipeline example"
+  path: https://github.com/tensorflow/tfx/tree/master/tfx/examples/cifar10
+- title: "Iris dataset pipeline example"
+  path: https://github.com/tensorflow/tfx/tree/master/tfx/examples/iris
+- title: "Docker-based chicago pipeline example"
+  path: https://github.com/tensorflow/tfx/tree/master/tfx/examples/containers/workshop
+- title: "Custom component tutorial"
+  path: https://github.com/tensorflow/tfx/tree/master/tfx/examples/custom_components
   status: external
 
 - heading: "Data Validation"
