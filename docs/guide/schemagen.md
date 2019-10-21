@@ -1,15 +1,22 @@
-# The SchemaGen TFX Pipeline Component
+# The SchemaGen Component
 
-Some TFX components use a description of your input data called a *schema*. The
+Some TFX components use a description of your input data. This description is called a *schema*. The
 schema is an instance of
 [schema.proto](
 https://github.com/tensorflow/metadata/blob/master/tensorflow_metadata/proto/v0/schema.proto).
-It can specify data types for feature values,
-whether a feature has to be present in all examples, allowed value ranges, and
-other properties.  A SchemaGen pipeline component will automatically generate a
-schema by inferring types, categories, and ranges from the training data.
+It can specify:
+*   Data types for feature values
+*   Whether or not a feature has to be present in all examples
+*   Allowed value ranges and some other properties too
 
-* Consumes: statistics from an StatisticsGen component
+In a typical TFX pipeline, SchemaGen generates a schema which is consumed by the
+other pipeline components. A SchemaGen component automatically generates a
+schema by inferring types, categories, and ranges from the training data.
+The auto-generated schema is best-effort and only tries to infer basic
+properties of the data. It is expected that developers review and modify it as
+needed.
+
+* Consumes: Statistics from a StatisticsGen component
 * Emits: Data schema proto
 
 Here's an excerpt from a schema proto:
@@ -43,26 +50,20 @@ feature {
 ...
 ```
 
-The following TFX libraries use the schema:
+The following TFX libraries use a schema:
 
 *   TensorFlow Data Validation
 *   TensorFlow Transform
 *   TensorFlow Model Analysis
 
-In a typical TFX pipeline SchemaGen generates a schema, which is consumed by the
-other pipeline components.
-
-Note: The auto-generated schema is best-effort and only tries to infer basic
-properties of the data. It is expected that developers review and modify it as
-needed.
 
 ## SchemaGen and TensorFlow Data Validation
 
-SchemaGen makes extensive use of [TensorFlow Data Validation](tfdv.md) for inferring a schema.
+SchemaGen makes extensive use of the [TensorFlow Data Validation](tfdv.md) library for inferring a schema.
 
 ## Using the SchemaGen Component
 
-A SchemaGen pipeline component is typically very easy to deploy and requires little
+A SchemaGen component is typically very easy to deploy and requires little
 customization. Typical code looks like this:
 
 ```python
@@ -71,5 +72,6 @@ from tfx import components
 ...
 
 infer_schema = components.SchemaGen(
-    statistics=compute_training_stats.outputs['statistics'])
+    statistics=compute_training_stats.outputs['statistics']
+    )
 ```
