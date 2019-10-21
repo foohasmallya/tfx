@@ -11,7 +11,7 @@ StatisticsGen uses Beam to scale to large datasets.
 ## StatisticsGen and TensorFlow Data Validation
 
 StatisticsGen makes extensive use of the [TensorFlow Data Validation](tfdv.md) library 
-while generating statistics from your dataset.
+to generate statistics from your dataset.
 
 ## Using the StatsGen Component
 
