@@ -1,21 +1,21 @@
-# The Evaluator TFX Pipeline Component
+# The Evaluator Component
 
-The Evaluator TFX pipeline component performs deep analysis on the training
-results for your models, to help you understand how your model performs on
-subsets of your data.
+The Evaluator component performs deep analysis on the training
+results of your models. This analysis helps you understand how your model performs on
+different subsets of your dataset.
 
-*   Consumes: EvalSavedModel from [Trainer](trainer.md)
-*   Emits: Analysis results to [TensorFlow Metadata](mlmd.md)
+*   Consumes: An `EvalSavedModel` from a [Trainer](trainer.md) component
+*   Emits: Analysis results (Which are written to [TensorFlow Metadata](mlmd.md))
 
 ## Evaluator and TensorFlow Model Analysis
 
 Evaluator leverages the [TensorFlow Model Analysis](tfma.md) library to perform
-the analysis, which in turn use [Apache Beam](beam.md) for scalable processing.
+the analysis. TFMA, in turn, uses [Apache Beam](beam.md) for scalable processing.
 
 ## Using the Evaluator Component
 
-A Evaluator pipeline component is typically very easy to deploy and requires little
-customization, since all of the work is done by the Evaluator TFX component.
+A Evaluator component is very easy to deploy and requires little
+customization.
 Typical code looks like this:
 
 ```python
