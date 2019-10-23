@@ -17,7 +17,7 @@ satisfy, and can be modified by the developer.
 
 * Consumes: A schema from a SchemaGen component and statistics from a StatisticsGen
 component.
-* Emits: Validation results
+* Output: Validation results
 
 ## ExampleValidator and TensorFlow Data Validation
 
