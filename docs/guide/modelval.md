@@ -13,7 +13,7 @@ to production.
 
 *   Consumes: A schema from a SchemaGen component, and statistics from a
     StatisticsGen component.
-*   Result: Validation results are written to [TensorFlow Metadata](mlmd.md).
+*   Output: Validation results are written to [TensorFlow Metadata](mlmd.md).
 
 ## Using the ModelValidator Component
 
