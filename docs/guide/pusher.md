@@ -8,7 +8,7 @@ model is "good enough" to be pushed to production.
 
 * Consumes: A Trained model in [SavedModel](
 https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/saved_model) format
-* Emits: The same SavedModel, along with versioning metadata
+* Output: The same SavedModel, along with versioning metadata
 
 ## Using the Pusher Component
 
