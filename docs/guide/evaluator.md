@@ -5,7 +5,7 @@ results of your models. This analysis helps you understand how your model perfor
 different subsets of your dataset.
 
 *   Consumes: An `EvalSavedModel` from a [Trainer](trainer.md) component
-*   Emits: Analysis results (Which are written to [TensorFlow Metadata](mlmd.md))
+*   Output: Analysis results (Which are written to [TensorFlow Metadata](mlmd.md))
 
 ## Evaluator and TensorFlow Model Analysis
 
