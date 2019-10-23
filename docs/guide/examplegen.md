@@ -6,7 +6,7 @@ other TFX components. It also provides consistent and configurable partition,
 and shuffles the dataset for ML best practice.
 
 *   Consumes: Data from external data sources such as CSV, `TFRecord` and BigQuery
-*   Emits: `tf.Example` records
+*   Output: `tf.Example` records
 
 ## ExampleGen and Other Components
 
