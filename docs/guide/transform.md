@@ -8,7 +8,7 @@ the transformed feature data.
 
 * Consumes: tf.Examples from an ExampleGen component, and a data schema from a
 SchemaGen component.
-* Emits: A SavedModel to a Trainer component
+* Output: A SavedModel to a Trainer component
 
 ## Configuring a Transform Component
 
