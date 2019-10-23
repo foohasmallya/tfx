@@ -6,7 +6,7 @@ components.
 StatisticsGen uses Beam to scale to large datasets.
 
 * Consumes: Datasets created by an ExampleGen pipeline component
-* Emits: Dataset statistics
+* Output: Dataset statistics
 
 ## StatisticsGen and TensorFlow Data Validation
 
