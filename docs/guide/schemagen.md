@@ -17,7 +17,7 @@ properties of the data. It is expected that developers review and modify it as
 needed.
 
 * Consumes: Statistics from a StatisticsGen component
-* Emits: Data schema proto
+* Output: Data schema proto
 
 Here's an excerpt from a schema proto:
 
