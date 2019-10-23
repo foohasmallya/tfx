@@ -1,13 +1,12 @@
-# The Trainer TFX Pipeline Component
+# The Trainer Component
 
-The Trainer TFX pipeline component trains a TensorFlow model.
+The Trainer component trains a TensorFlow model.
 
-Trainer consumes:
+Consumes:
 
-* Training tf.Examples transformed by a Transform pipeline component.
-* Eval tf.Examples transformed by a Transform pipeline component.
-* A data schema create by a SchemaGen pipeline component and optionally altered by
+* Consumes: Training `tf.Example` records transformed by a Transform component, eval `tf.Example` records transformed by a Transform component, and a data schema create by a SchemaGen component and, optionally, altered by
 the developer.
+* Output: A `SavedModel` and `EvalSavedModel`.
 
 Trainer emits: A SavedModel and an EvalSavedModel
 
@@ -18,12 +17,12 @@ Trainer makes extensive use of the Python
 
 ## Configuring a Trainer Component
 
-A Trainer pipeline component is typically very easy to develop and requires little
-customization, since all of the work is done by the Trainer TFX component.  Your
-TensorFlow modeling code however may be arbitrarily complex.
+A Trainer component is very easy to deploy and requires little
+customization. Your
+TensorFlow modeling code, however, may be arbitrarily complex.
 
-Caution: Developers are strongly encouraged to use the Estimator API at this
-time.  In a later release we expect Keras to be much better supported than it
+**Caution:** Developers are strongly encouraged to use the Estimator API at this
+time.  In a later release, we expect Keras to be much better supported than it
 currently is.
 
 Typical code looks like this:
