@@ -21,18 +21,19 @@ import datetime
 import os
 from typing import Text
 from ml_metadata.proto import metadata_store_pb2
-from tfx.components.evaluator.component import Evaluator
-from tfx.components.example_gen.csv_example_gen.component import CsvExampleGen
-from tfx.components.example_validator.component import ExampleValidator
-from tfx.components.model_validator.component import ModelValidator
-from tfx.components.pusher.component import Pusher
-from tfx.components.schema_gen.component import SchemaGen
-from tfx.components.statistics_gen.component import StatisticsGen
-from tfx.components.trainer.component import Trainer
-from tfx.components.transform.component import Transform
+from tfx.components import CsvExampleGen
+from tfx.components import Evaluator
+from tfx.components import ExampleValidator
+from tfx.components import ModelValidator
+from tfx.components import Pusher
+from tfx.components import SchemaGen
+from tfx.components import StatisticsGen
+from tfx.components import Trainer
+from tfx.components import Transform
 from tfx.orchestration import metadata
 from tfx.orchestration import pipeline
 from tfx.orchestration.airflow.airflow_dag_runner import AirflowDagRunner
+from tfx.orchestration.airflow.airflow_dag_runner import AirflowPipelineConfig
 from tfx.proto import evaluator_pb2
 from tfx.proto import pusher_pb2
 from tfx.proto import trainer_pb2
@@ -145,7 +146,7 @@ def _create_pipeline(
 
 
 # 'DAG' below need to be kept for Airflow to detect dag.
-DAG = AirflowDagRunner(_airflow_config).run(
+DAG = AirflowDagRunner(AirflowPipelineConfig(_airflow_config)).run(
     _create_pipeline(
         pipeline_name=_pipeline_name,
         pipeline_root=_pipeline_root,

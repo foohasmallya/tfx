@@ -20,6 +20,7 @@ from __future__ import print_function
 import os
 import absl
 import apache_beam as beam
+import tensorflow as tf
 import tensorflow_model_analysis as tfma
 from typing import Any, Dict, List, Text
 from tfx import types
@@ -117,6 +118,8 @@ class Executor(base_executor.BaseExecutor):
             slice_spec=slice_spec,
             output_path=blessed_model_eval_result_path))
 
+    absl.logging.info('all files in current_model_eval_result_path: [%s]',
+                      str(tf.io.gfile.listdir(current_model_eval_result_path)))
     current_model_eval_result = tfma.load_eval_result(
         output_path=current_model_eval_result_path)
 
@@ -128,7 +131,8 @@ class Executor(base_executor.BaseExecutor):
     if blessed_model_dir is None:
       absl.logging.info('No blessed model yet.')
       return True
-
+    absl.logging.info('all files in blessed_model_eval_result: [%s]',
+                      str(tf.io.gfile.listdir(blessed_model_eval_result_path)))
     blessed_model_eval_result = tfma.load_eval_result(
         output_path=blessed_model_eval_result_path)
 
@@ -188,7 +192,7 @@ class Executor(base_executor.BaseExecutor):
     # TODO(b/125853306): support customized slice spec.
     blessed = self._generate_blessing_result(
         eval_examples_uri=eval_examples_uri,
-        slice_spec=[tfma.slicer.slicer.SingleSliceSpec()],
+        slice_spec=[tfma.slicer.SingleSliceSpec()],
         current_model_dir=current_model.uri,
         blessed_model_dir=blessed_model_dir)
 

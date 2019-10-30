@@ -17,19 +17,18 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import multiprocessing
 import os
 import absl
 from typing import Text
-from tfx.components.evaluator.component import Evaluator
-from tfx.components.example_gen.csv_example_gen.component import CsvExampleGen
-from tfx.components.example_validator.component import ExampleValidator
-from tfx.components.model_validator.component import ModelValidator
-from tfx.components.pusher.component import Pusher
-from tfx.components.schema_gen.component import SchemaGen
-from tfx.components.statistics_gen.component import StatisticsGen
-from tfx.components.trainer.component import Trainer
-from tfx.components.transform.component import Transform
+from tfx.components import CsvExampleGen
+from tfx.components import Evaluator
+from tfx.components import ExampleValidator
+from tfx.components import ModelValidator
+from tfx.components import Pusher
+from tfx.components import SchemaGen
+from tfx.components import StatisticsGen
+from tfx.components import Trainer
+from tfx.components import Transform
 from tfx.orchestration import metadata
 from tfx.orchestration import pipeline
 from tfx.orchestration.beam.beam_dag_runner import BeamDagRunner
@@ -62,13 +61,10 @@ _metadata_path = os.path.join(_tfx_root, 'metadata', _pipeline_name,
 
 
 # TODO(b/137289334): rename this as simple after DAG visualization is done.
-def _create_pipeline(pipeline_name: Text,
-                     pipeline_root: Text,
-                     data_root: Text,
-                     module_file: Text,
-                     serving_model_dir: Text,
+def _create_pipeline(pipeline_name: Text, pipeline_root: Text, data_root: Text,
+                     module_file: Text, serving_model_dir: Text,
                      metadata_path: Text,
-                     direct_num_workers: int = 1) -> pipeline.Pipeline:
+                     direct_num_workers: int) -> pipeline.Pipeline:
   """Implements the chicago taxi pipeline with TFX."""
   examples = external_input(data_root)
 
@@ -135,26 +131,14 @@ def _create_pipeline(pipeline_name: Text,
       enable_cache=True,
       metadata_connection_config=metadata.sqlite_metadata_connection_config(
           metadata_path),
-      # Note that direct_num_workers != 1 will enable multi-process for TFX,
-      # we hide the FnApiRunner[1] setting from user, but this is subject to
-      # change if Beam offers pure flag setup.
-      # [1]https://issues.apache.org/jira/browse/BEAM-3645
-      beam_pipeline_args=['--direct_num_workers=%s' % direct_num_workers],
-      additional_pipeline_args={},
-  )
+      # TODO(b/141578059): The multi-processing API might change.
+      beam_pipeline_args=['--direct_num_workers=%d' % direct_num_workers])
 
 
 # To run this pipeline from the python CLI:
 #   $python taxi_pipeline_beam.py
 if __name__ == '__main__':
   absl.logging.set_verbosity(absl.logging.INFO)
-
-  try:
-    parallelism = multiprocessing.cpu_count()
-  except NotImplementedError:
-    absl.logging.info(
-        'Use single process as multiprocessing.cpu_count is not supported.')
-    parallelism = 1
 
   BeamDagRunner().run(
       _create_pipeline(
@@ -164,4 +148,6 @@ if __name__ == '__main__':
           module_file=_module_file,
           serving_model_dir=_serving_model_dir,
           metadata_path=_metadata_path,
-          direct_num_workers=parallelism))
+          # 0 means auto-detect based on on the number of CPUs available during
+          # execution time.
+          direct_num_workers=0))

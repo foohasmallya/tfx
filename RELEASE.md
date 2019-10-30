@@ -1,9 +1,39 @@
 # Current version (not yet released; still in development)
+*   Added documentation for Fairness Indicators.
+
+## Major Features and Improvements
+*   Introduced `PipelineConfig` and `BaseComponentConfig` to control the
+    platform specific settings for pipelines and components.
+
+## Bug fixes and other changes
+
+### Deprecations
+
+## Breaking changes
+
+### For pipeline authors
+
+### For component authors
+
+## Documentation updates
+
+# Version 0.15.0
 
 ## Major Features and Improvements
 
 *   Offered unified CLI for tfx pipeline actions on various orchestrators
     including Apache Airflow, Apache Beam and Kubeflow.
+*   Polished experimental interactive notebook execution and visualizations so
+    they are ready for use.
+*   Added BulkInferrer component to TFX pipeline, and corresponding offline
+    inference taxi pipeline.
+*   Introduced ImporterNode as a special TFX node to register external resource
+    into MLMD so that downstream nodes can use as input artifacts. An example
+    `taxi_pipeline_importer.py` enabled by ImporterNode was added to showcase
+    the user journey of user-provided schema (issue #571).
+*   Added experimental support for TFMA fairness indicator thresholds.
+*   Demonstrated DirectRunner multi-core processing in Chicago Taxi example,
+    including Airflow and Beam.
 *   Made model validator executor forward compatible with TFMA change.
 *   Added Iris flowers classification example.
 *   Added support for serialization and deserialization of components.
@@ -14,14 +44,13 @@
 *   Simplified component package names.
 *   Introduced BaseNode as the base class of any node in a TFX pipeline DAG.
 *   Added docker component launcher to launch container component.
-*   Added support for specifying pipeline root in runtime when run on KubeflowDagRunner.
-    A default value can be provided when constructing the TFX pipeline.
+*   Added support for specifying pipeline root in runtime when run on
+    KubeflowDagRunner. A default value can be provided when constructing the TFX
+    pipeline.
 *   Added basic span support in ExampleGen to ingest file based data sources
     that can be updated regularly by upstream.
-*   Branched serving examples under chicago_taxi_pipeline/ from
-    chicago_taxi/ example.
-*   Introduced ImporterNode as a special TFX node to register external resource
-    into MLMD so that downstream nodes can use as input artifacts.
+*   Branched serving examples under chicago_taxi_pipeline/ from chicago_taxi/
+    example.
 *   Supported beam arg 'direct_num_workers' for multi-processing on local.
 *   Improved naming of standard component inputs and outputs.
 *   Improved visualization functionality in the experimental TFX notebook
@@ -35,11 +64,16 @@
 *   Added container builder feature in the CLI tool for container-based custom
     python components. This is specifically for the Kubeflow orchestration
     engine, which requires containers built with the custom python code.
-*   Added experimental support for TFMA fairness indicator thresholds.
+*   Demonstrated DirectRunner multi-core processing in Chicago Taxi example,
+    including Airflow and Beam.
+*   Added Kubeflow artifact visualization of inputs, outputs and
+    execution properties for components using a Markdown file. Added Tensorboard
+    to Trainer components as well.
 
 ## Bug fixes and other changes
-*   Bumped test dependency to kfp (Kubeflow Pipelines SDK) to
-    be at version 0.1.31.2.
+
+*   Bumped test dependency to kfp (Kubeflow Pipelines SDK) to be at version
+    0.1.31.2.
 *   Fixed trainer executor to correctly make `transform_output` optional.
 *   Updated Chicago Taxi example dependency tensorflow to version >=1.14.0.
 *   Updated Chicago Taxi example dependencies tensorflow-data-validation,
@@ -52,15 +86,30 @@
     `component.outputs.output_name`).
 *   Updated Iris example to skip transform and use Keras model.
 *   Fixed the check for input artifact existence in base driver.
-*   Fixed bug in AI Platform Pusher that prevents pushes after first model,
-    and not being marked as default.
+*   Fixed bug in AI Platform Pusher that prevents pushes after first model, and
+    not being marked as default.
 *   Replaced all usage of deprecated `tensorflow.logging` with `absl.logging`.
-*   Used special user agent for all HTTP requests through
-    googleapiclient and apitools.
+*   Used special user agent for all HTTP requests through googleapiclient and
+    apitools.
 *   Transform component updated to use `tf.compat.v1` according to the TF 2.0
     upgrading procedure.
 *   TFX updated to use `tf.compat.v1` according to the TF 2.0 upgrading
     procedure.
+*   Added Kubeflow simple example that executes all components in-cluster.
+*   Fixed a bug that prevents updating execution type.
+*   Fixed a bug in model validator driver that reads across pipeline boundaries
+    when resolving latest blessed model.
+*   Depended on `apache-beam[gcp]>=2.16,<3`
+*   Depended on `ml-metadata>=0.15,<0.16`
+*   Depended on `tensorflow>=1.15,<3`
+*   Depended on `tensorflow-data-validation>=0.15,<0.16`
+*   Depended on `tensorflow-model-analysis>=0.15.2,<0.16`
+*   Depended on `tensorflow-transform>=0.15,<0.16`
+*   Depended on 'tfx_bsl>=0.15.1,<0.16'
+*   Made launcher return execution information, containing populated inputs,
+    outputs, and execution id.
+*   Updated the default configuration for accessing MLMD from pipelines running
+    in Kubeflow.
 
 ### Deprecations
 
@@ -80,12 +129,16 @@
 
 ### For pipeline authors
 
+*   Deprecated the usage of `tf.contrib.training.HParams` in Trainer as it is
+    deprecated in TF 2.0. User module relying on member method of that class
+    will not be supported. Dot style property access will be the only supported
+    style from now on.
+
 ### For component authors
 
 ## Documentation updates
 
 *   Added conceptual info on Artifacts to guide/index.md
-
 
 # Version 0.14.0
 
@@ -124,8 +177,8 @@
     to include both Python classes and containers.
 *   Supported run context for metadata tracking of tfx pipeline.
 
-
 ### Deprecations
+
 *   Deprecated 'metadata_db_root' in favor of passing in
     metadata_connection_config directly.
 *   airflow_runner.AirflowDAGRunner is renamed to
@@ -141,6 +194,7 @@
 *   Deprecated csv_input and tfrecord_input, use external_input instead.
 
 ## Bug fixes and other changes
+
 *   Updated components and code samples to use `tft.TFTransformOutput` (
     introduced in tensorflow_transform 0.8). This avoids directly accessing the
     DatasetSchema object which may be removed in tensorflow_transform 0.14 or
@@ -206,10 +260,10 @@
 
 *   Component class definitions have been simplified; existing custom components
     need to:
-    * specify a ComponentSpec contract and conform to new class definition
-      style (see `base_component.BaseComponent`)
-    * specify `EXECUTOR_SPEC=ExecutorClassSpec(MyExecutor)` in the component
-      definition to replace `executor=MyExecutor` from component constructor.
+    *   specify a ComponentSpec contract and conform to new class definition
+        style (see `base_component.BaseComponent`)
+    *   specify `EXECUTOR_SPEC=ExecutorClassSpec(MyExecutor)` in the component
+        definition to replace `executor=MyExecutor` from component constructor.
 *   Artifact definitions for standard TFX components have moved from using
     string type names into being concrete Artifact classes (see each official
     TFX component's ComponentSpec definition in `types.standard_component_specs`
@@ -295,4 +349,3 @@
 *   Adding instructions to refer to README when running Chicago Taxi notebooks
 
 ## Breaking changes
-

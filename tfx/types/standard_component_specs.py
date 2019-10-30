@@ -19,6 +19,7 @@ from __future__ import print_function
 
 from typing import Any, Dict, List, Text
 
+from tfx.proto import bulk_inferrer_pb2
 from tfx.proto import evaluator_pb2
 from tfx.proto import example_gen_pb2
 from tfx.proto import pusher_pb2
@@ -27,6 +28,29 @@ from tfx.types import standard_artifacts
 from tfx.types.component_spec import ChannelParameter
 from tfx.types.component_spec import ComponentSpec
 from tfx.types.component_spec import ExecutionParameter
+
+
+class BulkInferrerSpec(ComponentSpec):
+  """BulkInferrer component spec."""
+
+  PARAMETERS = {
+      'model_spec':
+          ExecutionParameter(type=bulk_inferrer_pb2.ModelSpec, optional=True),
+      'data_spec':
+          ExecutionParameter(type=bulk_inferrer_pb2.DataSpec, optional=True),
+  }
+  INPUTS = {
+      'examples':
+          ChannelParameter(type=standard_artifacts.Examples),
+      'model_export':
+          ChannelParameter(type=standard_artifacts.Model, optional=True),
+      'model_blessing':
+          ChannelParameter(
+              type=standard_artifacts.ModelBlessing, optional=True),
+  }
+  OUTPUTS = {
+      'output': ChannelParameter(type=standard_artifacts.InferenceResult),
+  }
 
 
 class EvaluatorSpec(ComponentSpec):
@@ -48,10 +72,13 @@ class EvaluatorSpec(ComponentSpec):
   OUTPUTS = {
       'output': ChannelParameter(type=standard_artifacts.ModelEvaluation),
   }
-  # TODO(b/139281215): these input names will be renamed in the future.
+  # TODO(b/139281215): these input / output names will be renamed in the future.
   # These compatibility aliases are provided for forwards compatibility.
   _INPUT_COMPATIBILITY_ALIASES = {
       'model': 'model_exports',
+  }
+  _OUTPUT_COMPATIBILITY_ALIASES = {
+      'evaluation': 'output',
   }
 
 
@@ -115,23 +142,6 @@ class ModelValidatorSpec(ComponentSpec):
   }
 
 
-class QueryBasedExampleGenSpec(ComponentSpec):
-  """Query-based ExampleGen component spec."""
-
-  PARAMETERS = {
-      'input_config':
-          ExecutionParameter(type=example_gen_pb2.Input),
-      'output_config':
-          ExecutionParameter(type=example_gen_pb2.Output),
-      'custom_config':
-          ExecutionParameter(type=example_gen_pb2.CustomConfig, optional=True),
-  }
-  INPUTS = {}
-  OUTPUTS = {
-      'examples': ChannelParameter(type=standard_artifacts.Examples),
-  }
-
-
 class PusherSpec(ComponentSpec):
   """Pusher component spec."""
 
@@ -156,6 +166,23 @@ class PusherSpec(ComponentSpec):
   }
   _OUTPUT_COMPATIBILITY_ALIASES = {
       'pushed_model': 'model_push',
+  }
+
+
+class QueryBasedExampleGenSpec(ComponentSpec):
+  """Query-based ExampleGen component spec."""
+
+  PARAMETERS = {
+      'input_config':
+          ExecutionParameter(type=example_gen_pb2.Input),
+      'output_config':
+          ExecutionParameter(type=example_gen_pb2.Output),
+      'custom_config':
+          ExecutionParameter(type=example_gen_pb2.CustomConfig, optional=True),
+  }
+  INPUTS = {}
+  OUTPUTS = {
+      'examples': ChannelParameter(type=standard_artifacts.Examples),
   }
 
 

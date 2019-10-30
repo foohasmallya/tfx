@@ -20,15 +20,15 @@ from __future__ import print_function
 import os
 import tensorflow as tf
 
-from tfx.components.evaluator.component import Evaluator
-from tfx.components.example_gen.csv_example_gen.component import CsvExampleGen
-from tfx.components.example_validator.component import ExampleValidator
-from tfx.components.model_validator.component import ModelValidator
-from tfx.components.pusher.component import Pusher
-from tfx.components.schema_gen.component import SchemaGen
-from tfx.components.statistics_gen.component import StatisticsGen
-from tfx.components.trainer.component import Trainer
-from tfx.components.transform.component import Transform
+from tfx.components import CsvExampleGen
+from tfx.components import Evaluator
+from tfx.components import ExampleValidator
+from tfx.components import ModelValidator
+from tfx.components import Pusher
+from tfx.components import SchemaGen
+from tfx.components import StatisticsGen
+from tfx.components import Trainer
+from tfx.components import Transform
 from tfx.examples.chicago_taxi_pipeline import taxi_pipeline_beam
 from tfx.proto import evaluator_pb2
 from tfx.proto import pusher_pb2
@@ -51,7 +51,8 @@ class TaxiPipelineBeamTest(tf.test.TestCase):
         data_root=self._test_dir,
         module_file=self._test_dir,
         serving_model_dir=self._test_dir,
-        metadata_path=self._test_dir)
+        metadata_path=self._test_dir,
+        direct_num_workers=1)
     self.assertEqual(9, len(logical_pipeline.components))
 
   def testTaxiPipelineNewStyleCompatibility(self):
@@ -102,6 +103,8 @@ class TaxiPipelineBeamTest(tf.test.TestCase):
         ]))
     self.assertIs(evaluator.inputs['model'],
                   evaluator.inputs['model_exports'])
+    self.assertIs(evaluator.outputs['evaluation'],
+                  evaluator.outputs['output'])
     model_validator = ModelValidator(
         examples=example_gen.outputs['examples'],
         model=trainer.outputs['model'])

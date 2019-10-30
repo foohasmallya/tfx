@@ -19,8 +19,7 @@ from __future__ import print_function
 
 import os
 import tensorflow as tf
-# TODO(jyzhao): BucketizeWithInputBoundaries error without this.
-from tensorflow.contrib.boosted_trees.python.ops import quantile_ops  # pylint: disable=unused-import
+
 from tfx.components.model_validator import executor
 from tfx.types import standard_artifacts
 
